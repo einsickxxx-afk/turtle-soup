@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>바다거북 스프</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Special+Elite&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+  :root {
+    --cobalt: #1A3A8F;
+    --orange: #E8440A;
+    --cream: #F2EBD9;
+    --ink: #1C1C1C;
+    --paper: #C9B99A;
+    --paper-light: #E5D9C3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cobalt);
+    min-height: 100vh;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--ink);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* 배경 텍스처 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 콜라주 배경 요소들 */
+  .bg-text {
+    position: fixed;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+    line-height: 1;
+  }
+  .bg-text-1 { font-size: 18vw; top: -2vh; left: -2vw; }
+  .bg-text-2 { font-size: 12vw; bottom: 5vh; right: -1vw; transform: rotate(-8deg); }
+  .bg-text-3 { font-size: 8vw; top: 40vh; left: 5vw; transform: rotate(90deg); color: rgba(232,68,10,0.06); }
+
+  /* 메인 레이아웃 */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* 헤더 */
+  header {
+    padding: 32px 0 20px;
+    position: relative;
+  }
+
+  .header-tape {
+    background: var(--orange);
+    color: var(--cream);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 4px 12px;
+    display: inline-block;
+    margin-bottom: 8px;
+    transform: rotate(-1deg);
+  }
+
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(52px, 12vw, 88px);
+    color: var(--cream);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    position: relative;
+  }
+
+  .header-title span {
+    color: var(--orange);
+    display: block;
+  }
+
+  .header-sub {
+    font-family: 'Special Elite', cursive;
+    color: var(--paper);
+    font-size: 13px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+  }
+
+  .compass-divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, var(--orange), transparent);
+    margin: 20px 0;
+    position: relative;
+  }
+  .compass-divider::after {
+    content: '◈';
+    position: absolute;
+    left: 0;
+    top: -8px;
+    color: var(--orange);
+    font-size: 18px;
+  }
+
+  /* 문제 카드 - 찢긴 종이 */
+  .puzzle-card {
+    background: var(--cream);
+    position: relative;
+    padding: 28px 28px 36px;
+    margin-bottom: 4px;
+  }
+
+  .puzzle-card::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: var(--cream);
+    clip-path: polygon(0% 100%, 2% 20%, 5% 80%, 8% 10%, 11% 70%, 14% 30%, 17% 90%, 20% 15%, 23% 75%, 26% 40%, 29% 85%, 32% 20%, 35% 65%, 38% 10%, 41% 80%, 44% 25%, 47% 70%, 50% 35%, 53% 90%, 56% 15%, 59% 60%, 62% 20%, 65% 75%, 68% 30%, 71% 85%, 74% 10%, 77% 65%, 80% 25%, 83% 80%, 86% 15%, 89% 70%, 92% 35%, 95% 90%, 98% 20%, 100% 100%);
+  }
+
+  .puzzle-card::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: var(--cream);
+    clip-path: polygon(0% 0%, 3% 80%, 6% 20%, 9% 90%, 12% 30%, 15% 70%, 18% 10%, 21% 85%, 24% 25%, 27% 60%, 30% 15%, 33% 75%, 36% 35%, 39% 90%, 42% 20%, 45% 65%, 48% 10%, 51% 80%, 54% 40%, 57% 85%, 60% 15%, 63% 70%, 66% 25%, 69% 80%, 72% 20%, 75% 75%, 78% 30%, 81% 85%, 84% 10%, 87% 65%, 90% 25%, 93% 80%, 96% 20%, 100% 0%);
+  }
+
+  .puzzle-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .puzzle-text {
+    font-family: 'Special Elite', cursive;
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--ink);
+  }
+
+  .puzzle-question {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--cobalt);
+    margin-top: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .puzzle-placeholder {
+    color: var(--paper);
+    font-family: 'Special Elite', cursive;
+    font-size: 15px;
+    line-height: 2;
+    font-style: italic;
+  }
+
+  /* 상태 배지 */
+  .status-strip {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 16px;
+    flex-wrap: wrap;
+  }
+
+  .status-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    border: 1.5px solid;
+  }
+
+  .badge-active { border-color: var(--orange); color: var(--orange); }
+  .badge-idle { border-color: var(--paper); color: var(--paper); }
+  .badge-solved { border-color: #4CAF50; color: #4CAF50; }
+
+  /* 채팅 영역 */
+  .chat-area {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 160px;
+  }
+
+  .msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .avatar-ai {
+    background: var(--orange);
+    color: var(--cream);
+  }
+
+  .avatar-user {
+    background: var(--cobalt);
+    border: 1.5px solid var(--paper);
+    color: var(--cream);
+  }
+
+  .msg-bubble {
+    max-width: 78%;
+    padding: 12px 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .bubble-ai {
+    background: var(--cream);
+    color: var(--ink);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+  }
+
+  .bubble-user {
+    background: rgba(255,255,255,0.08);
+    color: var(--cream);
+    border: 1px solid rgba(255,255,255,0.15);
+    clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px);
+    text-align: right;
+  }
+
+  .bubble-answer {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 2px 8px;
+    margin-left: 6px;
+  }
+
+  .answer-yes { background: var(--cobalt); color: var(--cream); }
+  .answer-no { background: var(--orange); color: var(--cream); }
+  .answer-close { background: #7B5E3A; color: var(--cream); }
+
+  /* 로딩 */
+  .loading-dots {
+    display: flex;
+    gap: 4px;
+    padding: 14px 16px;
+    background: var(--cream);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--paper);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+
+  /* 입력창 */
+  .input-section {
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .input-tape {
+    background: var(--orange);
+    color: var(--cream);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 3px 10px;
+    display: inline-block;
+    margin-bottom: 0;
+  }
+
+  .input-wrapper {
+    display: flex;
+    gap: 0;
+    background: var(--cream);
+    border-top: 3px solid var(--orange);
+  }
+
+  textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    resize: none;
+    min-height: 56px;
+    max-height: 120px;
+    line-height: 1.6;
+  }
+
+  textarea::placeholder {
+    color: var(--paper);
+    font-family: 'Special Elite', cursive;
+    font-size: 13px;
+  }
+
+  .send-btn {
+    background: var(--cobalt);
+    color: var(--cream);
+    border: none;
+    padding: 0 20px;
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 2px;
+    transition: background 0.15s;
+    min-width: 64px;
+  }
+
+  .send-btn:hover { background: var(--orange); }
+  .send-btn:disabled { background: var(--paper); cursor: not-allowed; }
+
+  /* 액션 버튼들 */
+  .action-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 7px 14px;
+    border: 1.5px solid;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-new {
+    border-color: var(--cream);
+    color: var(--cream);
+  }
+  .btn-new:hover {
+    background: var(--cream);
+    color: var(--cobalt);
+  }
+
+  .btn-hint {
+    border-color: var(--paper);
+    color: var(--paper);
+  }
+  .btn-hint:hover {
+    background: var(--paper);
+    color: var(--cobalt);
+  }
+
+  /* 힌트 카운터 */
+  .hint-counter {
+    font-family: 'Special Elite', cursive;
+    font-size: 12px;
+    color: var(--paper);
+    margin-left: auto;
+    align-self: center;
+  }
+
+  /* 정답 공개 */
+  .answer-reveal {
+    background: var(--orange);
+    color: var(--cream);
+    padding: 20px 24px;
+    margin-top: 8px;
+    position: relative;
+  }
+
+  .answer-reveal::before {
+    content: 'SOLUTION';
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 10px;
+    letter-spacing: 4px;
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .answer-reveal p {
+    font-family: 'Special Elite', cursive;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--paper); }
+
+  /* 반응형 */
+  @media (max-width: 480px) {
+    .puzzle-card { padding: 22px 20px 30px; }
+    .msg-bubble { max-width: 88%; font-size: 13px; }
+  }
+
+  /* 난이도 선택 */
+  .difficulty-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    background: rgba(0,0,0,0.2);
+    padding: 12px 14px;
+    border-left: 3px solid var(--orange);
+  }
+
+  .diff-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--paper);
+    margin-right: 4px;
+  }
+
+  .diff-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    color: var(--paper);
+    font-size: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 52px;
+  }
+
+  .diff-btn:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--cream);
+    color: var(--cream);
+  }
+
+  .diff-btn.active {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: var(--cream);
+  }
+
+  .diff-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .diff-stars {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: #FFD700;
+  }
+
+  .diff-btn.active .diff-stars {
+    color: var(--cream);
+  }
+
+  .diff-num {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* 질문 바닥 경고 */
+  .question-warning {
+    color: var(--orange);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="bg-text bg-text-1">SEA</div>
+<div class="bg-text bg-text-2">NEXT</div>
+<div class="bg-text bg-text-3">ONBOARD</div>
+
+<div class="container">
+  <header>
+    <div class="header-tape">LATERAL THINKING PUZZLE</div>
+    <h1 class="header-title">
+      바다거북
+      <span>스프</span>
+    </h1>
+    <p class="header-sub">예/아니오로만 진실에 닿을 수 있다</p>
+    <div class="compass-divider"></div>
+  </header>
+
+  <!-- 난이도 선택 -->
+  <div class="difficulty-row" id="difficultyRow">
+    <span class="diff-label">DIFFICULTY</span>
+    <button class="diff-btn active" data-level="1" onclick="setDifficulty(1)">
+      <span class="diff-stars">★</span><span class="diff-num">LV.1</span>
+    </button>
+    <button class="diff-btn" data-level="2" onclick="setDifficulty(2)">
+      <span class="diff-stars">★★</span><span class="diff-num">LV.2</span>
+    </button>
+    <button class="diff-btn" data-level="3" onclick="setDifficulty(3)">
+      <span class="diff-stars">★★★</span><span class="diff-num">LV.3</span>
+    </button>
+    <button class="diff-btn" data-level="4" onclick="setDifficulty(4)">
+      <span class="diff-stars">★★★★</span><span class="diff-num">LV.4</span>
+    </button>
+    <button class="diff-btn" data-level="5" onclick="setDifficulty(5)">
+      <span class="diff-stars">★★★★★</span><span class="diff-num">LV.5</span>
+    </button>
+  </div>
+
+  <div class="status-strip">
+    <div class="status-badge badge-idle" id="statusBadge">대기 중</div>
+    <div class="status-badge badge-idle" id="questionCount">질문 0 / 20</div>
+  </div>
+
+  <!-- 문제 카드 -->
+  <div class="puzzle-card">
+    <div class="puzzle-label">PUZZLE</div>
+    <div id="puzzleText" class="puzzle-placeholder">
+      새 문제 버튼을 눌러 시작하세요.<br>AI가 공포·스릴러 문제를 즉석에서 만들어냅니다.
+    </div>
+    <div id="puzzleQuestion" class="puzzle-question" style="display:none;"></div>
+  </div>
+
+  <!-- 대화 영역 -->
+  <div class="chat-area" id="chatArea"></div>
+
+  <!-- 정답 영역 -->
+  <div id="answerReveal" class="answer-reveal" style="display:none;"></div>
+
+  <!-- 입력 -->
+  <div class="input-section">
+    <div class="input-tape">YOUR QUESTION</div>
+    <div class="input-wrapper">
+      <textarea id="userInput" placeholder="예/아니오로 답할 수 있는 질문을 입력하세요..." rows="2" disabled></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendQuestion()" disabled>전송</button>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="action-btn btn-new" onclick="newPuzzle()">새 문제</button>
+    <button class="action-btn btn-hint" onclick="requestHint()" id="hintBtn" disabled>힌트</button>
+    <button class="action-btn btn-hint" onclick="revealAnswer()" id="revealBtn" style="border-color:#E8440A;color:#E8440A;display:none;">정답 공개</button>
+    <span class="hint-counter" id="hintCounter"></span>
+  </div>
+</div>
+
+<script>
+const DIFFICULTY_GUIDE = {
+  1: {
+    label: "⭐",
+    desc: "단서가 명확하고 도출 과정이 단순하다. 2~3번 질문이면 방향을 잡을 수 있을 정도. 반전은 있지만 예측 가능한 범위.",
+    situation: "상황 설명은 2~3문장. 단서를 많이 열어둔다."
+  },
+  2: {
+    label: "⭐⭐",
+    desc: "표면적 상황과 실제 진실 사이에 약간의 간극이 있다. 5~7번 정도 질문해야 방향이 잡힌다.",
+    situation: "상황 설명 3문장. 핵심 정보 하나는 숨긴다."
+  },
+  3: {
+    label: "⭐⭐⭐",
+    desc: "상황이 의도적으로 오해를 유도한다. 선입견을 깨야 풀린다. 10번 이상 질문이 필요할 수 있다.",
+    situation: "상황 설명 3~4문장. 진실과 반대 방향으로 유도하는 문장을 포함한다."
+  },
+  4: {
+    label: "⭐⭐⭐⭐",
+    desc: "여러 층위의 반전이 있다. 처음 떠오르는 가설이 거의 틀린다. 15번 이상 질문해도 쉽지 않다. 인간 심리의 어두운 면을 다룬다.",
+    situation: "상황 설명 3~4문장. 표면적으로는 평범해 보이지만 실은 극도로 뒤틀린 상황이다."
+  },
+  5: {
+    label: "⭐⭐⭐⭐⭐",
+    desc: "정답을 들어도 한 번에 이해가 안 될 정도로 복잡한 구조. 상황 묘사 자체가 함정이다. 인간이 가장 두려운 존재임을 증명하는 수준의 내용. 20번 질문으로도 풀기 매우 어렵다.",
+    situation: "상황 설명 4문장. 매우 구체적이고 사실적인 묘사로 시작하지만, 핵심 맥락이 완전히 누락되어 있다."
+  }
+};
+
+function buildSystemPrompt(diffLevel) {
+  const diff = DIFFICULTY_GUIDE[diffLevel];
+  return `당신은 바다거북 스프(Lateral Thinking Puzzle) 게임의 진행자입니다.
+
+역할:
+1. 문제 생성 요청 시: 공포·스릴러·인간이 무섭다는 테마의 독창적인 문제를 만듭니다.
+현재 난이도: ${diff.label}
+난이도 지침: ${diff.desc}
+상황 묘사 지침: ${diff.situation}
+반드시 아래 JSON 형식으로만 응답하세요:
+{"type":"puzzle","title":"제목","situation":"상황 설명","question":"왜 일까? / 어떻게 된 걸까?","answer":"정답 전체 설명 (상세하게)","keywords":["핵심단서1","핵심단서2","핵심단서3"]}
+
+2. 질문 응답 시: 반드시 아래 JSON 형식으로만 응답하세요:
+{"type":"answer","verdict":"yes|no|close","reply":"짧은 자연스러운 코멘트 (1~2문장)"}
+- yes: 맞다 / no: 아니다 / close: 절반 정도 맞거나 더 구체적으로 물어야 한다
+
+3. 힌트 요청 시:
+{"type":"hint","hint":"힌트 내용 (정답을 직접 알려주지 않고 방향만, 난이도에 맞게 조절)"}
+
+주의사항:
+- 항상 JSON만 출력, 다른 텍스트 없이
+- 문제는 논리적으로 완벽히 설명 가능해야 함
+- 높은 난이도일수록 상황이 오해를 유도해야 함
+- 답변은 간결하고 자연스럽게, AI 티 나는 표현 금지
+- 공포·스릴러 테마 유지`;
+}
+
+const SYSTEM_PROMPT = buildSystemPrompt(1);
+
+let gameState = {
+  puzzle: null,
+  answer: null,
+  questionCount: 0,
+  hintCount: 0,
+  isLoading: false,
+  conversationHistory: [],
+  difficulty: 1,
+  maxQuestions: 20
+};
+
+function setDifficulty(level) {
+  if (gameState.isLoading || gameState.puzzle) return; // 진행 중엔 변경 불가
+  gameState.difficulty = level;
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.level) === level);
+  });
+}
+
+async function callClaude(userMessage) {
+  gameState.conversationHistory.push({ role: "user", content: userMessage });
+
+  // 최근 16턴만 유지 (오래된 히스토리 제거, 단 첫 번째 puzzle 생성 응답은 보존)
+  let history = gameState.conversationHistory;
+  if (history.length > 16) {
+    // 첫 두 턴(문제 생성 요청 + 응답)은 항상 유지, 나머지는 최근 14턴만
+    const head = history.slice(0, 2);
+    const tail = history.slice(-14);
+    history = [...head, ...tail];
+  }
+
+  // 현재 문제 컨텍스트를 시스템 프롬프트에 포함
+  let systemWithContext = buildSystemPrompt(gameState.difficulty);
+  if (gameState.puzzle) {
+    systemWithContext += `\n\n현재 진행 중인 문제:\n상황: ${gameState.puzzle.situation}\n정답: ${gameState.puzzle.answer}\n키워드: ${(gameState.puzzle.keywords || []).join(', ')}`;
+  }
+
+  let response;
+  try {
+    response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: systemWithContext,
+        messages: history
+      })
+    });
+  } catch(networkErr) {
+    gameState.conversationHistory.pop();
+    return { type: "error", reply: "네트워크 연결을 확인해 주세요." };
+  }
+
+  if (!response.ok) {
+    gameState.conversationHistory.pop();
+    return { type: "error", reply: `서버 오류가 났어요 (${response.status}). 잠시 후 다시 시도해 주세요.` };
+  }
+
+  const data = await response.json();
+
+  if (data.error) {
+    gameState.conversationHistory.pop();
+    return { type: "error", reply: `API 오류: ${data.error.message || '알 수 없는 오류'}` };
+  }
+
+  const text = (data.content || []).map(i => i.text || "").join("");
+  gameState.conversationHistory[gameState.conversationHistory.length - 1];
+  gameState.conversationHistory.push({ role: "assistant", content: text });
+
+  // 히스토리 동기화 (슬라이싱 후 push된 것 반영)
+  if (gameState.conversationHistory.length > 18) {
+    const head = gameState.conversationHistory.slice(0, 2);
+    const tail = gameState.conversationHistory.slice(-16);
+    gameState.conversationHistory = [...head, ...tail];
+  }
+
+  try {
+    const clean = text.replace(/```json[\s\S]*?```|```/g, "").trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("no json");
+    return JSON.parse(jsonMatch[0]);
+  } catch(e) {
+    return { type: "error", reply: "응답 형식 오류가 났어요. 다시 시도해 주세요." };
+  }
+}
+
+function setLoading(bool) {
+  gameState.isLoading = bool;
+  document.getElementById('sendBtn').disabled = bool || !gameState.puzzle;
+  document.getElementById('hintBtn').disabled = bool || !gameState.puzzle;
+}
+
+function addMessage(role, content, verdict) {
+  const chatArea = document.getElementById('chatArea');
+  
+  const msg = document.createElement('div');
+  msg.className = `msg ${role === 'user' ? 'msg-user' : ''}`;
+  
+  const avatar = document.createElement('div');
+  avatar.className = `msg-avatar ${role === 'user' ? 'avatar-user' : 'avatar-ai'}`;
+  avatar.textContent = role === 'user' ? 'YOU' : 'AI';
+
+  const bubble = document.createElement('div');
+  bubble.className = `msg-bubble ${role === 'user' ? 'bubble-user' : 'bubble-ai'}`;
+  
+  if (verdict) {
+    const tag = document.createElement('span');
+    tag.className = `bubble-answer ${verdict === 'yes' ? 'answer-yes' : verdict === 'no' ? 'answer-no' : 'answer-close'}`;
+    tag.textContent = verdict === 'yes' ? 'YES' : verdict === 'no' ? 'NO' : 'CLOSE';
+    bubble.appendChild(tag);
+    bubble.appendChild(document.createTextNode(' ' + content));
+  } else {
+    bubble.textContent = content;
+  }
+
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  chatArea.appendChild(msg);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showLoading() {
+  const chatArea = document.getElementById('chatArea');
+  const loadingEl = document.createElement('div');
+  loadingEl.className = 'msg';
+  loadingEl.id = 'loadingMsg';
+  loadingEl.innerHTML = `
+    <div class="msg-avatar avatar-ai">AI</div>
+    <div class="loading-dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>`;
+  chatArea.appendChild(loadingEl);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function hideLoading() {
+  const el = document.getElementById('loadingMsg');
+  if (el) el.remove();
+}
+
+async function newPuzzle() {
+  if (gameState.isLoading) return;
+  
+  // 리셋
+  gameState.puzzle = null;
+  gameState.answer = null;
+  gameState.questionCount = 0;
+  gameState.hintCount = 0;
+  gameState.conversationHistory = [];
+  
+  document.getElementById('chatArea').innerHTML = '';
+  document.getElementById('questionCount').textContent = `질문 0 / ${gameState.maxQuestions}`;
+  document.getElementById('questionCount').className = 'status-badge badge-idle';
+  document.querySelectorAll('.diff-btn').forEach(btn => btn.disabled = false);
+  document.getElementById('answerReveal').style.display = 'none';
+  document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('puzzleText').textContent = '';
+  document.getElementById('puzzleQuestion').style.display = 'none';
+  document.getElementById('hintCounter').textContent = '';
+  
+  setLoading(true);
+  showLoading();
+  
+  document.getElementById('statusBadge').textContent = '생성 중...';
+  document.getElementById('statusBadge').className = 'status-badge badge-active';
+
+  try {
+    // 난이도 버튼 잠금
+    document.querySelectorAll('.diff-btn').forEach(btn => btn.disabled = true);
+    const result = await callClaude(`새로운 공포/스릴러 바다거북 스프 문제를 만들어줘. 난이도 ${gameState.difficulty}성 기준으로.`);
+    hideLoading();
+    
+    if (result.type === 'puzzle') {
+      gameState.puzzle = result;
+      gameState.answer = result.answer;
+      
+      document.getElementById('puzzleText').className = 'puzzle-text';
+      document.getElementById('puzzleText').textContent = result.situation;
+      document.getElementById('puzzleQuestion').textContent = result.question;
+      document.getElementById('puzzleQuestion').style.display = 'block';
+      
+      document.getElementById('statusBadge').textContent = '진행 중';
+      document.getElementById('statusBadge').className = 'status-badge badge-active';
+      document.getElementById('userInput').disabled = false;
+      document.getElementById('hintBtn').disabled = false;
+      document.getElementById('revealBtn').style.display = 'inline-block';
+      
+      addMessage('ai', '문제 준비됐어요. 예/아니오로 답할 수 있는 질문을 해보세요.');
+    }
+  } catch(e) {
+    hideLoading();
+    addMessage('ai', '문제 생성에 실패했어요. 다시 시도해 주세요.');
+  }
+  
+  setLoading(false);
+}
+
+async function sendQuestion() {
+  const input = document.getElementById('userInput');
+  const question = input.value.trim();
+  if (!question || gameState.isLoading || !gameState.puzzle) return;
+  
+  input.value = '';
+  gameState.questionCount++;
+  const remaining = gameState.maxQuestions - gameState.questionCount;
+  const qBadge = document.getElementById('questionCount');
+  qBadge.textContent = `질문 ${gameState.questionCount} / ${gameState.maxQuestions}`;
+  if (remaining <= 5) {
+    qBadge.className = 'status-badge badge-active question-warning';
+  }
+  if (gameState.questionCount >= gameState.maxQuestions) {
+    // 질문 소진 → 자동 정답 공개
+    document.getElementById('userInput').disabled = true;
+    document.getElementById('sendBtn').disabled = true;
+    addMessage('ai', '질문 20개를 모두 사용했어요. 정답을 공개할게요.');
+    setTimeout(() => revealAnswer(), 1200);
+    return;
+  }
+  
+  addMessage('user', question);
+  setLoading(true);
+  showLoading();
+
+  try {
+    const result = await callClaude(`플레이어 질문: "${question}"`);
+    hideLoading();
+    
+    if (result.type === 'answer') {
+      addMessage('ai', result.reply, result.verdict);
+    } else if (result.type === 'error') {
+      addMessage('ai', result.reply);
+    } else {
+      addMessage('ai', '응답이 이상하게 왔어요. 질문을 다시 해주세요.');
+    }
+  } catch(e) {
+    hideLoading();
+    addMessage('ai', '오류가 났어요. 다시 시도해 주세요.');
+  }
+  
+  setLoading(false);
+}
+
+async function requestHint() {
+  if (gameState.isLoading || !gameState.puzzle) return;
+  
+  gameState.hintCount++;
+  document.getElementById('hintCounter').textContent = `힌트 ${gameState.hintCount}회 사용`;
+  
+  setLoading(true);
+  showLoading();
+
+  try {
+    const result = await callClaude("힌트를 요청합니다.");
+    hideLoading();
+    
+    if (result.type === 'hint') {
+      addMessage('ai', `힌트: ${result.hint}`);
+    } else if (result.type === 'error') {
+      addMessage('ai', result.reply);
+    } else {
+      addMessage('ai', '힌트를 불러오는 데 실패했어요. 다시 시도해 주세요.');
+    }
+  } catch(e) {
+    hideLoading();
+    addMessage('ai', '오류가 났어요.');
+  }
+  
+  setLoading(false);
+}
+
+async function revealAnswer() {
+  if (!gameState.answer) return;
+  
+  document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('statusBadge').textContent = '완료';
+  document.getElementById('statusBadge').className = 'status-badge badge-solved';
+  document.getElementById('userInput').disabled = true;
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('hintBtn').disabled = true;
+  document.querySelectorAll('.diff-btn').forEach(btn => btn.disabled = false);
+  
+  const revealEl = document.getElementById('answerReveal');
+  revealEl.style.display = 'block';
+  revealEl.innerHTML = `<p>${gameState.answer}</p>`;
+  revealEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// 엔터키로 전송
+document.getElementById('userInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendQuestion();
+  }
+});
+</script>
+</body>
+</html>
